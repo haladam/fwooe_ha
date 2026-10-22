@@ -1,0 +1,444 @@
+{
+  "webext2": true,
+  "version": "1.3.1",
+  "title": "laufend",
+  "pubDate": "Thu, 22 Oct 2026 12:51:01 +0200",
+  "cnt_einsaetze": 7,
+  "cnt_feuerwehren": 22,
+  "einsaetze": {
+    "0": {
+      "einsatz": {
+        "num1": "E261004313",
+        "einsatzort": "FR - Weitersfelden",
+        "startzeit": "Thu, 22 Oct 2026 12:16:04 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "Weitersfelden",
+          "earea": "Weitersfelden",
+          "emun": "Weitersfelden",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "14.7199",
+          "lat": "48.4785"
+        },
+        "bezirk": {
+          "id": 2,
+          "text": "Freistadt"
+        },
+        "feuerwehren": {
+          "402320": {
+            "feuerwehr": "Feuerwehr/Florian Weitersfelden (35320)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 402320,
+            "fwname": "Feuerwehr/Florian Weitersfelden (35320)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    },
+    "1": {
+      "einsatz": {
+        "num1": "E261004298",
+        "einsatzort": "LL - Traun",
+        "startzeit": "Thu, 22 Oct 2026 10:46:06 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "Traun",
+          "earea": "Traun",
+          "emun": "Traun",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "14.252",
+          "lat": "48.2254"
+        },
+        "bezirk": {
+          "id": 6,
+          "text": "Linz-Land"
+        },
+        "feuerwehren": {
+          "406263": {
+            "feuerwehr": "Feuerwehr/Florian Dr. Franz Feurstein Ges.m.b.H. (39263)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 406263,
+            "fwname": "Feuerwehr/Florian Dr. Franz Feurstein Ges.m.b.H. (39263)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    },
+    "2": {
+      "einsatz": {
+        "num1": "E261004275",
+        "einsatzort": "BR - St. Peter am Hart",
+        "startzeit": "Thu, 22 Oct 2026 08:21:40 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "St. Peter am Hart",
+          "earea": "St. Peter am Hart",
+          "emun": "St. Peter am Hart",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "13.0986",
+          "lat": "48.2534"
+        },
+        "bezirk": {
+          "id": 0,
+          "text": "Braunau"
+        },
+        "feuerwehren": {
+          "400111": {
+            "feuerwehr": "Feuerwehr/Florian Sankt Peter am Hart (33111)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 400111,
+            "fwname": "Feuerwehr/Florian Sankt Peter am Hart (33111)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    },
+    "3": {
+      "einsatz": {
+        "num1": "E261004261",
+        "einsatzort": "PE - Katsdorf",
+        "startzeit": "Thu, 22 Oct 2026 06:28:48 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "3",
+        "einsatzart": "BRAND",
+        "einsatztyp": {
+          "id": "B1-GEB-INDUSTRIE",
+          "text": "Brand Industrie"
+        },
+        "einsatzsubtyp": {
+          "id": "GEWERBE-BR",
+          "text": "Brand Gewerbe"
+        },
+        "adresse": {
+          "default": "Katsdorf",
+          "earea": "Katsdorf",
+          "emun": "Katsdorf",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "14.5091",
+          "lat": "48.3122"
+        },
+        "bezirk": {
+          "id": 7,
+          "text": "Perg"
+        },
+        "feuerwehren": {
+          "402213": {
+            "feuerwehr": "Feuerwehr/Florian Wartberg ob der Aist (35213)"
+          },
+          "407110": {
+            "feuerwehr": "Feuerwehr/Florian Saxen (42110)"
+          },
+          "407202": {
+            "feuerwehr": "Feuerwehr/Florian Altaist-Hartl (42202)"
+          },
+          "407203": {
+            "feuerwehr": "Feuerwehr/Florian Blindendorf (42203)"
+          },
+          "407204": {
+            "feuerwehr": "Feuerwehr/Florian Haid (PE) (42204)"
+          },
+          "407206": {
+            "feuerwehr": "Feuerwehr/Florian Katsdorf (42206)"
+          },
+          "407208": {
+            "feuerwehr": "Feuerwehr/Florian Luftenberg an der Donau (42208)"
+          },
+          "407209": {
+            "feuerwehr": "Feuerwehr/Florian Lungitz (42209)"
+          },
+          "407210": {
+            "feuerwehr": "Feuerwehr/Florian Mauthausen (42210)"
+          },
+          "407211": {
+            "feuerwehr": "Feuerwehr/Florian Obenberg (42211)"
+          },
+          "407214": {
+            "feuerwehr": "Feuerwehr/Florian Ried in der Riedmark (42214)"
+          },
+          "407215": {
+            "feuerwehr": "Feuerwehr/Florian Ruhstetten (42215)"
+          },
+          "407217": {
+            "feuerwehr": "Feuerwehr/Florian Sankt Georgen an der Gusen (42217)"
+          },
+          "407309": {
+            "feuerwehr": "Feuerwehr/Florian Münzbach (42309)"
+          },
+          "407312": {
+            "feuerwehr": "Feuerwehr/Florian Perg (42312)"
+          },
+          "412313": {
+            "feuerwehr": "Feuerwehr/Florian Schweinbach (49313)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 402213,
+            "fwname": "Feuerwehr/Florian Wartberg ob der Aist (35213)"
+          },
+          "1": {
+            "fwnr": 407110,
+            "fwname": "Feuerwehr/Florian Saxen (42110)"
+          },
+          "2": {
+            "fwnr": 407202,
+            "fwname": "Feuerwehr/Florian Altaist-Hartl (42202)"
+          },
+          "3": {
+            "fwnr": 407203,
+            "fwname": "Feuerwehr/Florian Blindendorf (42203)"
+          },
+          "4": {
+            "fwnr": 407204,
+            "fwname": "Feuerwehr/Florian Haid (PE) (42204)"
+          },
+          "5": {
+            "fwnr": 407206,
+            "fwname": "Feuerwehr/Florian Katsdorf (42206)"
+          },
+          "6": {
+            "fwnr": 407208,
+            "fwname": "Feuerwehr/Florian Luftenberg an der Donau (42208)"
+          },
+          "7": {
+            "fwnr": 407209,
+            "fwname": "Feuerwehr/Florian Lungitz (42209)"
+          },
+          "8": {
+            "fwnr": 407210,
+            "fwname": "Feuerwehr/Florian Mauthausen (42210)"
+          },
+          "9": {
+            "fwnr": 407211,
+            "fwname": "Feuerwehr/Florian Obenberg (42211)"
+          },
+          "10": {
+            "fwnr": 407214,
+            "fwname": "Feuerwehr/Florian Ried in der Riedmark (42214)"
+          },
+          "11": {
+            "fwnr": 407215,
+            "fwname": "Feuerwehr/Florian Ruhstetten (42215)"
+          },
+          "12": {
+            "fwnr": 407217,
+            "fwname": "Feuerwehr/Florian Sankt Georgen an der Gusen (42217)"
+          },
+          "13": {
+            "fwnr": 407309,
+            "fwname": "Feuerwehr/Florian Münzbach (42309)"
+          },
+          "14": {
+            "fwnr": 407312,
+            "fwname": "Feuerwehr/Florian Perg (42312)"
+          },
+          "15": {
+            "fwnr": 412313,
+            "fwname": "Feuerwehr/Florian Schweinbach (49313)"
+          }
+        },
+        "cntfeuerwehren": 16
+      }
+    },
+    "4": {
+      "einsatz": {
+        "num1": "E261004229",
+        "einsatzort": "VB - Ottnang am Hausruck",
+        "startzeit": "Wed, 21 Oct 2026 19:20:14 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "Ottnang am Hausruck",
+          "earea": "Ottnang am Hausruck",
+          "emun": "Ottnang am Hausruck",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "13.6356",
+          "lat": "48.1029"
+        },
+        "bezirk": {
+          "id": 13,
+          "text": "Vöcklabruck"
+        },
+        "feuerwehren": {
+          "413302": {
+            "feuerwehr": "Feuerwehr/Florian Bergern (50302)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 413302,
+            "fwname": "Feuerwehr/Florian Bergern (50302)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    },
+    "5": {
+      "einsatz": {
+        "num1": "E261004227",
+        "einsatzort": "VB - Ottnang am Hausruck",
+        "startzeit": "Wed, 21 Oct 2026 19:19:11 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "Ottnang am Hausruck",
+          "earea": "Ottnang am Hausruck",
+          "emun": "Ottnang am Hausruck",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "13.6378",
+          "lat": "48.079"
+        },
+        "bezirk": {
+          "id": 13,
+          "text": "Vöcklabruck"
+        },
+        "feuerwehren": {
+          "413309": {
+            "feuerwehr": "Feuerwehr/Florian Plötzenedt (50309)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 413309,
+            "fwname": "Feuerwehr/Florian Plötzenedt (50309)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    },
+    "6": {
+      "einsatz": {
+        "num1": "E261004210",
+        "einsatzort": "SE - Weyer",
+        "startzeit": "Wed, 21 Oct 2026 18:39:02 +0200",
+        "inzeit": "",
+        "status": "offen",
+        "alarmstufe": "0",
+        "einsatzart": "SELBST",
+        "einsatztyp": {
+          "id": "SELBST",
+          "text": "Selbstständiger Einsatz"
+        },
+        "einsatzsubtyp": {
+          "id": "TETRA-SELBST",
+          "text": "Einsatz od. Einsatzübung"
+        },
+        "adresse": {
+          "default": "Weyer",
+          "earea": "Weyer",
+          "emun": "Weyer",
+          "efeanme": "",
+          "estnum": "",
+          "ecompl": ""
+        },
+        "wgs84": {
+          "lng": "14.5638",
+          "lat": "47.7182"
+        },
+        "bezirk": {
+          "id": 11,
+          "text": "Steyr-Land"
+        },
+        "feuerwehren": {
+          "411318": {
+            "feuerwehr": "Feuerwehr/Florian Unterlaussa (46318)"
+          }
+        },
+        "feuerwehrenarray": {
+          "0": {
+            "fwnr": 411318,
+            "fwname": "Feuerwehr/Florian Unterlaussa (46318)"
+          }
+        },
+        "cntfeuerwehren": 1
+      }
+    }
+  }
+}

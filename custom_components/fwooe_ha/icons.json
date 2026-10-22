@@ -1,0 +1,34 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "active_incident": {
+        "default": "mdi:alarm-light-outline",
+        "state": {
+          "on": "mdi:alarm-light"
+        }
+      }
+    },
+    "event": {
+      "incident": {
+        "default": "mdi:bell-ring-outline"
+      }
+    },
+    "sensor": {
+      "incidents": {
+        "default": "mdi:fire-truck"
+      },
+      "latest_incident": {
+        "default": "mdi:alarm-light"
+      },
+      "latest_incident_started": {
+        "default": "mdi:clock-start"
+      },
+      "incidents_in_feed": {
+        "default": "mdi:counter"
+      },
+      "feed_published": {
+        "default": "mdi:rss"
+      }
+    }
+  }
+}

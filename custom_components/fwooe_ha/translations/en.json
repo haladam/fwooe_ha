@@ -1,0 +1,97 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Feuerwehr OÖ Einsätze",
+        "description": "Shows the incidents currently running in Upper Austria, from the public feed of the Oö. Landes-Feuerwehrverband. More filters are available later under *Configure*.",
+        "data": {
+          "name": "Name",
+          "districts": "Districts",
+          "include_self_initiated": "Include self-initiated deployments and exercises"
+        },
+        "data_description": {
+          "name": "Name of this feed. Create several to watch different districts.",
+          "districts": "Only show incidents in these districts. Leave empty for all of Upper Austria.",
+          "include_self_initiated": "Brigades that roll out on their own or exercises (type SELBST) make up most of the list. They are hidden by default."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The incident feed could not be reached. Check the internet connection and try again.",
+      "invalid_data": "The incident feed returned data in an unexpected format.",
+      "unknown": "Unexpected error. See the Home Assistant log for details."
+    },
+    "abort": {
+      "already_configured": "A feed with this name is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Filters",
+        "description": "An incident is shown when it passes all filters that are set.",
+        "data": {
+          "districts": "Districts",
+          "keywords": "Keywords",
+          "include_self_initiated": "Include self-initiated deployments and exercises",
+          "min_alarm_level": "Minimum alarm level",
+          "max_incidents": "Maximum number of incidents",
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "districts": "Only show incidents in these districts. Leave empty for all of Upper Austria.",
+          "keywords": "Only show incidents whose type, subtype or place contains one of these words (for example Brand, Verkehr, Wald).",
+          "include_self_initiated": "Brigades that roll out on their own or exercises (type SELBST) make up most of the list.",
+          "min_alarm_level": "Hide incidents below this alarm level. 0 shows all.",
+          "max_incidents": "How many of the newest incidents are listed in the attributes and get a map entity.",
+          "scan_interval": "Seconds between two reads of the feed."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "active_incident": {
+        "name": "Active incident"
+      }
+    },
+    "event": {
+      "incident": {
+        "name": "Incident alert",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "new_incident": "New incident",
+              "alarm_level_raised": "Alarm level raised"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "incidents": {
+        "name": "Incidents"
+      },
+      "latest_incident": {
+        "name": "Latest incident"
+      },
+      "latest_incident_started": {
+        "name": "Latest incident started"
+      },
+      "incidents_in_feed": {
+        "name": "Incidents in feed"
+      },
+      "feed_published": {
+        "name": "Feed updated"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Could not read the incident feed: {error}"
+    },
+    "invalid_data": {
+      "message": "The incident feed has an unexpected format: {error}"
+    }
+  }
+}

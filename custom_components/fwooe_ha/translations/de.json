@@ -1,0 +1,97 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Feuerwehr OÖ Einsätze",
+        "description": "Zeigt die aktuell laufenden Einsätze in Oberösterreich aus dem öffentlichen Feed des Oö. Landes-Feuerwehrverbands. Weitere Filter gibt es später unter *Konfigurieren*.",
+        "data": {
+          "name": "Name",
+          "districts": "Bezirke",
+          "include_self_initiated": "Selbstständige Einsätze und Einsatzübungen anzeigen"
+        },
+        "data_description": {
+          "name": "Name dieses Feeds. Für mehrere Bezirke können mehrere Feeds angelegt werden.",
+          "districts": "Nur Einsätze in diesen Bezirken anzeigen. Leer lassen für ganz Oberösterreich.",
+          "include_self_initiated": "Feuerwehren, die selbstständig ausrücken, und Übungen (Typ SELBST) machen den Großteil der Liste aus. Sie sind standardmäßig ausgeblendet."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Der Einsatz-Feed ist nicht erreichbar. Internetverbindung prüfen und erneut versuchen.",
+      "invalid_data": "Der Einsatz-Feed hat Daten in einem unerwarteten Format geliefert.",
+      "unknown": "Unerwarteter Fehler. Details stehen im Home-Assistant-Log."
+    },
+    "abort": {
+      "already_configured": "Ein Feed mit diesem Namen ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Filter",
+        "description": "Ein Einsatz wird angezeigt, wenn er alle gesetzten Filter erfüllt.",
+        "data": {
+          "districts": "Bezirke",
+          "keywords": "Stichwörter",
+          "include_self_initiated": "Selbstständige Einsätze und Einsatzübungen anzeigen",
+          "min_alarm_level": "Minimale Alarmstufe",
+          "max_incidents": "Maximale Anzahl Einsätze",
+          "scan_interval": "Aktualisierungsintervall"
+        },
+        "data_description": {
+          "districts": "Nur Einsätze in diesen Bezirken anzeigen. Leer lassen für ganz Oberösterreich.",
+          "keywords": "Nur Einsätze anzeigen, deren Typ, Untertyp oder Ort eines dieser Wörter enthält (zum Beispiel Brand, Verkehr, Wald).",
+          "include_self_initiated": "Feuerwehren, die selbstständig ausrücken, und Übungen (Typ SELBST) machen den Großteil der Liste aus.",
+          "min_alarm_level": "Einsätze unter dieser Alarmstufe ausblenden. 0 zeigt alle.",
+          "max_incidents": "Wie viele der neuesten Einsätze in den Attributen stehen und eine Karten-Entität bekommen.",
+          "scan_interval": "Sekunden zwischen zwei Abfragen des Feeds."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "active_incident": {
+        "name": "Aktiver Einsatz"
+      }
+    },
+    "event": {
+      "incident": {
+        "name": "Einsatzmeldung",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "new_incident": "Neuer Einsatz",
+              "alarm_level_raised": "Alarmstufe erhöht"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "incidents": {
+        "name": "Einsätze"
+      },
+      "latest_incident": {
+        "name": "Letzter Einsatz"
+      },
+      "latest_incident_started": {
+        "name": "Beginn des letzten Einsatzes"
+      },
+      "incidents_in_feed": {
+        "name": "Einsätze im Feed"
+      },
+      "feed_published": {
+        "name": "Feed aktualisiert"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Der Einsatz-Feed konnte nicht gelesen werden: {error}"
+    },
+    "invalid_data": {
+      "message": "Der Einsatz-Feed hat ein unerwartetes Format: {error}"
+    }
+  }
+}
