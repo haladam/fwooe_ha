@@ -1,0 +1,190 @@
+{
+  "entity_id": "sensor.feuerwehr_oo_incidents",
+  "state": "7",
+  "attributes": {
+    "incidents": [
+      {
+        "id": "E261004313",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "FR - Weitersfelden",
+        "location": "Weitersfelden",
+        "municipality": "Weitersfelden",
+        "district": "Freistadt",
+        "start_time": "2026-10-22T12:16:04+02:00",
+        "latitude": 48.4785,
+        "longitude": 14.7199,
+        "units": [
+          "Florian Weitersfelden"
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      },
+      {
+        "id": "E261004298",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "LL - Traun",
+        "location": "Traun",
+        "municipality": "Traun",
+        "district": "Linz-Land",
+        "start_time": "2026-10-22T10:46:06+02:00",
+        "latitude": 48.2254,
+        "longitude": 14.252,
+        "units": [
+          "Florian Dr. Franz Feurstein Ges.m.b.H."
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      },
+      {
+        "id": "E261004275",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "BR - St. Peter am Hart",
+        "location": "St. Peter am Hart",
+        "municipality": "St. Peter am Hart",
+        "district": "Braunau",
+        "start_time": "2026-10-22T08:21:40+02:00",
+        "latitude": 48.2534,
+        "longitude": 13.0986,
+        "units": [
+          "Florian Sankt Peter am Hart"
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      },
+      {
+        "id": "E261004261",
+        "description": "Brand Industrie - Brand Gewerbe",
+        "kind": "BRAND",
+        "type": "Brand Industrie",
+        "type_id": "B1-GEB-INDUSTRIE",
+        "subtype": "Brand Gewerbe",
+        "subtype_id": "GEWERBE-BR",
+        "alarm_level": 3,
+        "status": "offen",
+        "place": "PE - Katsdorf",
+        "location": "Katsdorf",
+        "municipality": "Katsdorf",
+        "district": "Perg",
+        "start_time": "2026-10-22T06:28:48+02:00",
+        "latitude": 48.3122,
+        "longitude": 14.5091,
+        "units": [
+          "Florian Wartberg ob der Aist",
+          "Florian Saxen",
+          "Florian Altaist-Hartl",
+          "Florian Blindendorf",
+          "Florian Haid (PE)",
+          "Florian Katsdorf",
+          "Florian Luftenberg an der Donau",
+          "Florian Lungitz",
+          "Florian Mauthausen",
+          "Florian Obenberg",
+          "Florian Ried in der Riedmark",
+          "Florian Ruhstetten",
+          "Florian Sankt Georgen an der Gusen",
+          "Florian Münzbach",
+          "Florian Perg",
+          "Florian Schweinbach"
+        ],
+        "unit_count": 16,
+        "self_initiated": false
+      },
+      {
+        "id": "E261004229",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "VB - Ottnang am Hausruck",
+        "location": "Ottnang am Hausruck",
+        "municipality": "Ottnang am Hausruck",
+        "district": "Vöcklabruck",
+        "start_time": "2026-10-21T19:20:14+02:00",
+        "latitude": 48.1029,
+        "longitude": 13.6356,
+        "units": [
+          "Florian Bergern"
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      },
+      {
+        "id": "E261004227",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "VB - Ottnang am Hausruck",
+        "location": "Ottnang am Hausruck",
+        "municipality": "Ottnang am Hausruck",
+        "district": "Vöcklabruck",
+        "start_time": "2026-10-21T19:19:11+02:00",
+        "latitude": 48.079,
+        "longitude": 13.6378,
+        "units": [
+          "Florian Plötzenedt"
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      },
+      {
+        "id": "E261004210",
+        "description": "Selbstständiger Einsatz - Einsatz od. Einsatzübung",
+        "kind": "SELBST",
+        "type": "Selbstständiger Einsatz",
+        "type_id": "SELBST",
+        "subtype": "Einsatz od. Einsatzübung",
+        "subtype_id": "TETRA-SELBST",
+        "alarm_level": 0,
+        "status": "offen",
+        "place": "SE - Weyer",
+        "location": "Weyer",
+        "municipality": "Weyer",
+        "district": "Steyr-Land",
+        "start_time": "2026-10-21T18:39:02+02:00",
+        "latitude": 47.7182,
+        "longitude": 14.5638,
+        "units": [
+          "Florian Unterlaussa"
+        ],
+        "unit_count": 1,
+        "self_initiated": true
+      }
+    ],
+    "incidents_by_kind": {
+      "SELBST": 6,
+      "BRAND": 1
+    },
+    "attribution": "Data: Oö. Landes-Feuerwehrverband (einsaetze.ooelfv.at)",
+    "friendly_name": "Feuerwehr OÖ Incidents"
+  }
+}

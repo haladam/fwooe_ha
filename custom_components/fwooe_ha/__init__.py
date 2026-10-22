@@ -4,10 +4,16 @@ from __future__ import annotations
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from .api import FwooeClient
+from .card import async_register_card
+from .const import DOMAIN
 from .coordinator import FwooeConfigEntry, FwooeCoordinator
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -15,6 +21,12 @@ PLATFORMS: list[Platform] = [
     Platform.GEO_LOCATION,
     Platform.SENSOR,
 ]
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the integration: make the dashboard card available (once, for all feeds)."""
+    await async_register_card(hass)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: FwooeConfigEntry) -> bool:

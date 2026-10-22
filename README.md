@@ -13,6 +13,8 @@ level goes up.
   incident as event data: the trigger for notifications.
 * **Map entities:** one `geo_location` entity per incident, with the distance to your home as its
   state. They appear on the map card, and disappear again when the incident ends.
+* **Dashboard card:** `fwooe-incidents-card`, included: the running incidents with alarm level,
+  distance, the alarmed brigades and a link to the map. Nothing extra to install.
 * Filters you can change at any time under *Configure*; several feeds can run side by side (for
   example "home Bezirk" and "work Bezirk").
 
@@ -101,6 +103,35 @@ them on if you want to see everything the feed contains.
 
 The entity ids depend on the name you chose and on the language of your Home Assistant.
 
+## Dashboard card
+
+The integration brings its own card, `fwooe-incidents-card`. There is nothing to install and no
+resource to add: after a restart it is in the card picker as *Feuerwehr OÖ Einsätze* (if the
+browser still shows the old dashboard, reload the page without cache, Ctrl+F5).
+
+```yaml
+type: custom:fwooe-incidents-card
+entity: sensor.feuerwehr_oo_incidents
+```
+
+Each incident shows what happened (type and subtype), where (place and Bezirk), how long ago it
+started, the alarm level, the distance from your home, and a list of the alarmed brigades that
+opens on a tap; the pin opens the position on OpenStreetMap. Fires are red, other incidents orange,
+self-initiated deployments grey. It follows the theme (light and dark), and speaks English or
+German like your Home Assistant.
+
+| Option | Default | Meaning |
+|---|---|---|
+| `entity` | the first *Incidents* sensor found | The `Incidents` sensor of the feed to show. |
+| `title` | *Fire brigade incidents* | Title of the card. |
+| `max_items` | `5` | How many incidents are listed; the rest is counted as "+3 more". |
+| `show_units` | `true` | List the alarmed brigades (otherwise only their number). |
+| `show_distance` | `true` | Show the distance from the home location of Home Assistant. |
+
+The card shows what the sensor holds, so it follows your filters (Bezirke, keywords, alarm level,
+the maximum number of incidents under *Configure*). For several feeds use one card each, with their
+own `entity`. For the incidents on a map use the map card shown below.
+
 ## Examples
 
 ### Notification when a fire starts
@@ -156,9 +187,11 @@ custom_components/fwooe_ha/   the integration (what HACS installs)
   coordinator.py              polling, filtering, new/escalated incidents
   config_flow.py              setup and options
   sensor.py binary_sensor.py event.py geo_location.py   the platforms
+  card.py                     serves and registers the dashboard card
+  frontend/                   the dashboard card (one JavaScript file, no build step)
   translations/               English and German
   brand/                      icon and logo (shipped with the integration)
-tests/                        tests; fixtures/feed.json is a recorded feed
+tests/                        tests; fixtures/feed.json is a recorded feed, card.test.mjs tests the card
 scripts/                      run_tests.sh, release.sh
 ```
 
@@ -166,13 +199,18 @@ scripts/                      run_tests.sh, release.sh
   `tests/fixtures/website_bezirke.html` is the website's list of Bezirke, which the model must equal.
   The rest runs against a real Home Assistant:
   `python3.14 -m venv .venv && . .venv/bin/activate && pip install -r requirements_test.txt && pytest`.
+* **Card:** `node --test tests/card.test.mjs` (Node 22 or newer, no packages). The card is plain
+  JavaScript in `custom_components/fwooe_ha/frontend/`; the functions that do not touch the page are
+  exported and tested there, `tests/fixtures/card_state.json` is the sensor as the card receives it.
 * **Lint:** `ruff check . && ruff format --check .`
 * **Version:** the single source is `version` in `manifest.json`.
 
 ### Releasing an update
 
 1. Add a `## x.y.z - date` section to `CHANGELOG.md`.
-2. `./scripts/release.sh x.y.z` bumps the manifest, runs the tests, commits and tags `vx.y.z`.
+2. `./scripts/release.sh x.y.z` bumps the manifest (unless it says so already), runs the tests,
+   commits and tags `vx.y.z`. The tag must be on a commit whose manifest has that version, or the
+   *Release* workflow refuses it.
 3. `git push && git push --tags`. The *Release* workflow checks that the tag matches the manifest,
    zips the integration and publishes the GitHub release; HACS offers it as an update.
 
