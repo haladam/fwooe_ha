@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 import logging
 from typing import Any
 
@@ -18,6 +19,7 @@ from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
+    SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
     SelectSelectorMode,
@@ -39,7 +41,6 @@ from .const import (
     DEFAULT_MIN_ALARM_LEVEL,
     DEFAULT_NAME,
     DEFAULT_SCAN_INTERVAL,
-    DISTRICTS,
     DOMAIN,
     MAX_ALARM_LEVEL,
     MAX_MAX_INCIDENTS,
@@ -47,20 +48,26 @@ from .const import (
     MIN_MAX_INCIDENTS,
     MIN_SCAN_INTERVAL,
 )
-from .models import FeedFormatError
+from .models import DISTRICTS, FeedFormatError, normalize_districts
 
 _LOGGER = logging.getLogger(__name__)
 
 _INTEGER_OPTIONS = (CONF_MIN_ALARM_LEVEL, CONF_MAX_INCIDENTS, CONF_SCAN_INTERVAL)
 
 
-def _districts_selector() -> SelectSelector:
+def _districts_selector(unlisted: Iterable[str] = ()) -> SelectSelector:
+    """Choose any number of Bezirke; the value stored for each is the website's code.
+
+    ``unlisted`` keeps selectable what an earlier version stored and is no known Bezirk.
+    """
+    options = [SelectOptionDict(value=district.code, label=district.name) for district in DISTRICTS]
+    listed = {option["value"] for option in options}
+    options.extend(
+        SelectOptionDict(value=value, label=value) for value in unlisted if value not in listed
+    )
     return SelectSelector(
         SelectSelectorConfig(
-            options=list(DISTRICTS),
-            multiple=True,
-            custom_value=True,
-            mode=SelectSelectorMode.DROPDOWN,
+            options=options, multiple=True, sort=True, mode=SelectSelectorMode.DROPDOWN
         )
     )
 
@@ -88,22 +95,24 @@ USER_SCHEMA = vol.Schema(
     }
 )
 
-OPTIONS_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_DISTRICTS): _districts_selector(),
-        vol.Optional(CONF_KEYWORDS): _keywords_selector(),
-        vol.Optional(CONF_INCLUDE_SELF_INITIATED, default=False): BooleanSelector(),
-        vol.Optional(CONF_MIN_ALARM_LEVEL, default=DEFAULT_MIN_ALARM_LEVEL): _number(
-            0, MAX_ALARM_LEVEL
-        ),
-        vol.Optional(CONF_MAX_INCIDENTS, default=DEFAULT_MAX_INCIDENTS): _number(
-            MIN_MAX_INCIDENTS, MAX_MAX_INCIDENTS
-        ),
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): _number(
-            MIN_SCAN_INTERVAL, MAX_SCAN_INTERVAL, step=5, unit="s"
-        ),
-    }
-)
+
+def _options_schema(unlisted_districts: Iterable[str] = ()) -> vol.Schema:
+    return vol.Schema(
+        {
+            vol.Optional(CONF_DISTRICTS): _districts_selector(unlisted_districts),
+            vol.Optional(CONF_KEYWORDS): _keywords_selector(),
+            vol.Optional(CONF_INCLUDE_SELF_INITIATED, default=False): BooleanSelector(),
+            vol.Optional(CONF_MIN_ALARM_LEVEL, default=DEFAULT_MIN_ALARM_LEVEL): _number(
+                0, MAX_ALARM_LEVEL
+            ),
+            vol.Optional(CONF_MAX_INCIDENTS, default=DEFAULT_MAX_INCIDENTS): _number(
+                MIN_MAX_INCIDENTS, MAX_MAX_INCIDENTS
+            ),
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): _number(
+                MIN_SCAN_INTERVAL, MAX_SCAN_INTERVAL, step=5, unit="s"
+            ),
+        }
+    )
 
 
 def _clean_options(user_input: dict[str, Any]) -> dict[str, Any]:
@@ -172,9 +181,14 @@ class FwooeOptionsFlow(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(data=_clean_options(user_input))
 
+        # Version 0.1.0 stored district names; show them as the Bezirke they are.
+        suggested = dict(self.config_entry.options)
+        districts = normalize_districts(suggested.get(CONF_DISTRICTS))
+        if CONF_DISTRICTS in suggested:
+            suggested[CONF_DISTRICTS] = districts
+        known = {district.code for district in DISTRICTS}
+        schema = _options_schema([value for value in districts if value not in known])
         return self.async_show_form(
             step_id="init",
-            data_schema=self.add_suggested_values_to_schema(
-                OPTIONS_SCHEMA, self.config_entry.options
-            ),
+            data_schema=self.add_suggested_values_to_schema(schema, suggested),
         )

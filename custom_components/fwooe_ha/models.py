@@ -16,6 +16,13 @@ as text), ``status``, ``startzeit`` (RFC 2822), the place ``einsatzort`` (``"PE 
 ``adresse``, ``bezirk``, ``wgs84`` (coordinates as text) and the alarmed brigades in
 ``feuerwehrenarray``. ``SELBST`` is a *Selbstständiger Einsatz*: a brigade that rolled out on
 its own or an exercise; most of the running list is usually made up of these.
+
+The Bezirke (districts) are the 18 that the district filter of einsaetze.ooelfv.at offers, each
+with the id the feed puts in ``bezirk.id`` and the code the website uses for it (``PE-07``:
+two letters, which also start the ``einsatzort`` of its incidents, and the id). Not every feed
+spells a Bezirk the same way: the JSON feed has ``{"id": 11, "text": "Steyr-Land"}``, while the
+2-day XML feed has ``<bezirk id="SE-11">SE-11</bezirk>`` for the same Bezirk. :func:`find_district`
+understands all of these, so a Bezirk is always recognised by what it is, not by how it is written.
 """
 
 from __future__ import annotations
@@ -101,6 +108,63 @@ def _parse_units(value: Any) -> tuple[str, ...]:
         if name:
             units.append(_clean_unit(name))
     return tuple(units)
+
+
+@dataclass(frozen=True, slots=True)
+class District:
+    """A Bezirk of Upper Austria, as the district filter of einsaetze.ooelfv.at lists it."""
+
+    id: int  # ``bezirk.id`` in the feed
+    abbreviation: str  # the letters before the place of an incident ("PE - Katsdorf")
+    name: str
+
+    @property
+    def code(self) -> str:
+        """The value the website's district filter uses, for example ``PE-07``."""
+        return f"{self.abbreviation}-{self.id:02d}"
+
+
+# In the order of the website's filter list (which is the order of the ids).
+DISTRICTS: tuple[District, ...] = (
+    District(0, "BR", "Braunau"),
+    District(1, "EF", "Eferding"),
+    District(2, "FR", "Freistadt"),
+    District(3, "GM", "Gmunden"),
+    District(4, "GR", "Grieskirchen"),
+    District(5, "KI", "Kirchdorf"),
+    District(6, "LL", "Linz-Land"),
+    District(7, "PE", "Perg"),
+    District(8, "RI", "Ried im Innkreis"),
+    District(9, "RO", "Rohrbach"),
+    District(10, "SD", "Schärding"),
+    District(11, "SE", "Steyr-Land"),
+    District(12, "UU", "Urfahr-Umgebung"),
+    District(13, "VB", "Vöcklabruck"),
+    District(14, "WL", "Wels-Land"),
+    District(15, "SR", "Steyr-Stadt"),
+    District(16, "WE", "Wels-Stadt"),
+    District(17, "LS", "Linz-Stadt"),
+)
+
+_DISTRICT_BY_ID = {district.id: district for district in DISTRICTS}
+_DISTRICT_BY_CODE = {district.code: district for district in DISTRICTS}
+_DISTRICT_BY_NAME = {district.name.casefold(): district for district in DISTRICTS}
+_DISTRICT_CODE_RE = re.compile(r"^([A-Za-z]{2})\s*-\s*(\d{1,2})$")
+
+
+def find_district(value: Any) -> District | None:
+    """Recognise a Bezirk by its id (``7``), code (``PE-07``) or name (``Perg``).
+
+    Returns None for anything that is none of the 18 (including the empty string).
+    """
+    text = _str(value)
+    if not text:
+        return None
+    if (number := _int(text)) is not None:
+        return _DISTRICT_BY_ID.get(number)
+    if match := _DISTRICT_CODE_RE.match(text):
+        return _DISTRICT_BY_CODE.get(f"{match[1].upper()}-{int(match[2]):02d}")
+    return _DISTRICT_BY_NAME.get(text.casefold())
 
 
 @dataclass(frozen=True, slots=True)
@@ -203,8 +267,10 @@ def parse_incident(raw: Any) -> Incident | None:
     incident_type = _mapping(raw.get("einsatztyp"))
     subtype = _mapping(raw.get("einsatzsubtyp"))
     address = _mapping(raw.get("adresse"))
-    district = _mapping(raw.get("bezirk"))
+    district_data = _mapping(raw.get("bezirk"))
     coordinates = _mapping(raw.get("wgs84"))
+    # By id, else by the text; either may be a code like "SE-11" instead of id or name.
+    district = find_district(district_data.get("id")) or find_district(district_data.get("text"))
 
     latitude = _coordinate(coordinates.get("lat"), 90)
     longitude = _coordinate(coordinates.get("lng"), 180)
@@ -226,8 +292,8 @@ def parse_incident(raw: Any) -> Incident | None:
         place=_str(raw.get("einsatzort")),
         location=_str(address.get("default")),
         municipality=_str(address.get("emun")),
-        district_id=_int(district.get("id")),
-        district=_str(district.get("text")),
+        district_id=district.id if district else _int(district_data.get("id")),
+        district=district.name if district else _str(district_data.get("text")),
         start=_parse_time(raw.get("startzeit")),
         latitude=latitude,
         longitude=longitude,
@@ -281,6 +347,20 @@ def _clamp(value: Any, default: int, low: int, high: int) -> int:
     return max(low, min(high, number))
 
 
+def normalize_districts(value: Any) -> list[str]:
+    """The chosen Bezirke as stored: the website's code (``PE-07``) of every Bezirk we know.
+
+    Version 0.1.0 stored names (``Perg``), and ids or codes are accepted too; anything that is
+    none of the 18 stays as it is, so nothing the user chose silently disappears.
+    """
+    result: dict[str, str] = {}  # casefolded -> value, because matching ignores case
+    for item in _as_list(value):
+        district = find_district(item)
+        normalized = district.code if district else item
+        result.setdefault(normalized.casefold(), normalized)
+    return list(result.values())
+
+
 @dataclass(frozen=True, slots=True)
 class Selection:
     """The incidents that pass the filter, newest first."""
@@ -293,7 +373,8 @@ class Selection:
 class IncidentFilter:
     """Which incidents the user wants to see."""
 
-    districts: frozenset[str] = frozenset()
+    districts: frozenset[int] = frozenset()  # ids of the chosen Bezirke
+    other_districts: frozenset[str] = frozenset()  # chosen names that are no known Bezirk
     keywords: tuple[str, ...] = ()
     include_self_initiated: bool = False
     min_alarm_level: int = 0
@@ -309,9 +390,15 @@ class IncidentFilter:
         min_alarm_level: Any = 0,
         max_incidents: Any = 20,
     ) -> IncidentFilter:
-        """Build a filter from raw option values (lists, or comma separated text)."""
+        """Build a filter from raw option values (lists, or comma separated text).
+
+        A Bezirk may be given as code, id or name (see :func:`find_district`); a value that is
+        none of the known Bezirke is matched as an exact, case-insensitive name.
+        """
+        chosen = [(item, find_district(item)) for item in _as_list(districts)]
         return cls(
-            districts=frozenset(name.casefold() for name in _as_list(districts)),
+            districts=frozenset(district.id for _, district in chosen if district),
+            other_districts=frozenset(item.casefold() for item, district in chosen if not district),
             keywords=tuple(dict.fromkeys(word.casefold() for word in _as_list(keywords))),
             include_self_initiated=bool(include_self_initiated),
             min_alarm_level=_clamp(min_alarm_level, 0, 0, 99),
@@ -324,7 +411,10 @@ class IncidentFilter:
             return False
         if self.min_alarm_level and (incident.alarm_level or 0) < self.min_alarm_level:
             return False
-        if self.districts and incident.district.casefold() not in self.districts:
+        if (self.districts or self.other_districts) and not (
+            incident.district_id in self.districts
+            or incident.district.casefold() in self.other_districts
+        ):
             return False
         if self.keywords:
             text = incident.search_text

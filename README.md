@@ -2,8 +2,9 @@
 
 A Home Assistant integration that shows the **currently running fire brigade incidents in
 Upper Austria**, from the public feed behind [einsaetze.ooelfv.at](https://einsaetze.ooelfv.at)
-(Oö. Landes-Feuerwehrverband). Filter by district, keyword and alarm level, see incidents on the
-map, and trigger automations when a new one starts or its alarm level goes up.
+(Oö. Landes-Feuerwehrverband). Follow one or several Bezirke (districts), filter by keyword and
+alarm level, see incidents on the map, and trigger automations when a new one starts or its alarm
+level goes up.
 
 * **Sensors:** number of incidents, the latest incident (with all details as attributes), when it
   started, and diagnostics about the feed.
@@ -13,7 +14,7 @@ map, and trigger automations when a new one starts or its alarm level goes up.
 * **Map entities:** one `geo_location` entity per incident, with the distance to your home as its
   state. They appear on the map card, and disappear again when the incident ends.
 * Filters you can change at any time under *Configure*; several feeds can run side by side (for
-  example "home district" and "work district").
+  example "home Bezirk" and "work Bezirk").
 
 > **Unofficial.** This is not an alerting service and is not affiliated with the
 > Oö. Landes-Feuerwehrverband. The feed is delayed and can be wrong or unavailable: never rely on
@@ -47,14 +48,31 @@ the current release.
 
 ## Setup
 
-When adding the integration you choose a **name**, optionally one or more **districts**
+When adding the integration you choose a **name**, optionally one or more **Bezirke**
 (empty = all of Upper Austria) and whether to include self-initiated deployments.
+
+### Choosing Bezirke
+
+The list is the one of the district filter on einsaetze.ooelfv.at: the 18 Bezirke of Upper Austria
+(15 districts plus the statutory cities Linz-Stadt, Steyr-Stadt and Wels-Stadt). Pick as many as
+you like; only the incidents of the chosen Bezirke are counted, listed, raise events and get a map
+entity. Change the selection under *Configure* at any time: saving reloads the feed, and the map
+entities of Bezirke you removed go away.
+
+Each Bezirk is stored the way the website names it (`PE-07` is Perg, `SE-11` is Steyr-Land) and
+recognised by its number, so it does not matter how a feed spells it. (The feed this integration
+reads writes `{"id": 11, "text": "Steyr-Land"}`; the 2-day XML feed of the same service writes the
+same Bezirk as `SE-11`.) Feeds set up with 0.1.0, which stored names, keep working unchanged and
+show up as chosen Bezirke in *Configure*.
+
+The feed has no per-Bezirk address: the integration reads the one list of running incidents and
+keeps those of your Bezirke.
 
 ### Options (Configure)
 
 | Option | Meaning |
 |---|---|
-| Districts | Only incidents in these districts (Bezirke), exact name as on einsaetze.ooelfv.at. |
+| Bezirke | Only incidents in these Bezirke (any number); empty = all. See *Choosing Bezirke*. |
 | Keywords | Only incidents whose type, subtype or place contains one of these words, for example `Brand`, `Verkehr`, `Wald`. Not case sensitive. |
 | Include self-initiated deployments and exercises | See below. Off by default. |
 | Minimum alarm level | Hide incidents below this level (`alarmstufe`). 0 shows all. |
@@ -132,7 +150,8 @@ triggers:
 
 ```
 custom_components/fwooe_ha/   the integration (what HACS installs)
-  models.py                   feed parsing, filters, change detection (standard library only)
+  models.py                   feed parsing, the 18 Bezirke, filters, change detection (standard
+                              library only)
   api.py                      HTTP client
   coordinator.py              polling, filtering, new/escalated incidents
   config_flow.py              setup and options
@@ -143,7 +162,8 @@ tests/                        tests; fixtures/feed.json is a recorded feed
 scripts/                      run_tests.sh, release.sh
 ```
 
-* **Tests:** `./scripts/run_tests.sh`. The feed model (`tests/test_models.py`) needs only Python.
+* **Tests:** `./scripts/run_tests.sh`. The feed model (`tests/test_models.py`) needs only Python;
+  `tests/fixtures/website_bezirke.html` is the website's list of Bezirke, which the model must equal.
   The rest runs against a real Home Assistant:
   `python3.14 -m venv .venv && . .venv/bin/activate && pip install -r requirements_test.txt && pytest`.
 * **Lint:** `ruff check . && ruff format --check .`

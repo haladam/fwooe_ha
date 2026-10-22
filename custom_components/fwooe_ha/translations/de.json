@@ -11,7 +11,7 @@
         },
         "data_description": {
           "name": "Name dieses Feeds. Für mehrere Bezirke können mehrere Feeds angelegt werden.",
-          "districts": "Nur Einsätze in diesen Bezirken anzeigen. Leer lassen für ganz Oberösterreich.",
+          "districts": "Nur Einsätze in diesen Bezirken anzeigen, beliebig viele. Leer lassen für ganz Oberösterreich.",
           "include_self_initiated": "Feuerwehren, die selbstständig ausrücken, und Übungen (Typ SELBST) machen den Großteil der Liste aus. Sie sind standardmäßig ausgeblendet."
         }
       }
@@ -39,7 +39,7 @@
           "scan_interval": "Aktualisierungsintervall"
         },
         "data_description": {
-          "districts": "Nur Einsätze in diesen Bezirken anzeigen. Leer lassen für ganz Oberösterreich.",
+          "districts": "Nur Einsätze in diesen Bezirken anzeigen, beliebig viele. Leer lassen für ganz Oberösterreich.",
           "keywords": "Nur Einsätze anzeigen, deren Typ, Untertyp oder Ort eines dieser Wörter enthält (zum Beispiel Brand, Verkehr, Wald).",
           "include_self_initiated": "Feuerwehren, die selbstständig ausrücken, und Übungen (Typ SELBST) machen den Großteil der Liste aus.",
           "min_alarm_level": "Einsätze unter dieser Alarmstufe ausblenden. 0 zeigt alle.",

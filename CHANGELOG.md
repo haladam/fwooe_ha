@@ -3,6 +3,23 @@
 Newest first. The version in `custom_components/fwooe_ha/manifest.json` and the latest section
 below always match.
 
+## 0.2.0 - 2026-10-22
+
+Choose the Bezirke to follow.
+
+* The district option is now a list of the 18 **Bezirke** of the district filter of
+  einsaetze.ooelfv.at (including Wels-Stadt and Linz-Stadt), and any number can be chosen: only the
+  incidents of the chosen Bezirke are counted, listed, fire events and get a map entity. Leave it
+  empty for all of Upper Austria.
+* A Bezirk is identified by its number (`bezirk.id` of the feed; the website's code is `PE-07`),
+  not by how a feed spells it. The 2-day XML feed writes Steyr-Land as `SE-11` where the running
+  feed writes `11` and `Steyr-Land`: both are the same Bezirk.
+* Existing feeds keep working: the names stored by 0.1.0 are understood, are shown as chosen Bezirke
+  under *Configure*, and are stored as codes from the next save. A value that is no known Bezirk is
+  kept (and offered) instead of being dropped.
+* The `district` attribute of an incident is always the Bezirk's name as the website writes it.
+* Tests check the list of Bezirke against the website's own filter list.
+
 ## 0.1.0 - 2026-10-22
 
 First release as a HACS custom integration (before this, the repository held loose files).

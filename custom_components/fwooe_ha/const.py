@@ -35,29 +35,6 @@ DEFAULT_SCAN_INTERVAL: Final = 60  # seconds
 MIN_SCAN_INTERVAL: Final = 30
 MAX_SCAN_INTERVAL: Final = 600
 
-# The districts (Bezirke) of Upper Austria as the filter list of einsaetze.ooelfv.at spells them;
-# the feed's `bezirk.text` uses the same spelling.
-DISTRICTS: Final = (
-    "Braunau",
-    "Eferding",
-    "Freistadt",
-    "Gmunden",
-    "Grieskirchen",
-    "Kirchdorf",
-    "Linz-Land",
-    "Perg",
-    "Ried im Innkreis",
-    "Rohrbach",
-    "Schärding",
-    "Steyr-Land",
-    "Urfahr-Umgebung",
-    "Vöcklabruck",
-    "Wels-Land",
-    "Steyr-Stadt",
-    "Wels-Stadt",
-    "Linz-Stadt",
-)
-
 # Event types of the event entity
 EVENT_NEW_INCIDENT: Final = "new_incident"
 EVENT_ALARM_RAISED: Final = "alarm_level_raised"

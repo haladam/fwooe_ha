@@ -6,12 +6,12 @@
         "description": "Shows the incidents currently running in Upper Austria, from the public feed of the Oö. Landes-Feuerwehrverband. More filters are available later under *Configure*.",
         "data": {
           "name": "Name",
-          "districts": "Districts",
+          "districts": "Districts (Bezirke)",
           "include_self_initiated": "Include self-initiated deployments and exercises"
         },
         "data_description": {
-          "name": "Name of this feed. Create several to watch different districts.",
-          "districts": "Only show incidents in these districts. Leave empty for all of Upper Austria.",
+          "name": "Name of this feed. Create several to watch different Bezirke.",
+          "districts": "Only show incidents in these Bezirke, as many as you like. Leave empty for all of Upper Austria.",
           "include_self_initiated": "Brigades that roll out on their own or exercises (type SELBST) make up most of the list. They are hidden by default."
         }
       }
@@ -31,7 +31,7 @@
         "title": "Filters",
         "description": "An incident is shown when it passes all filters that are set.",
         "data": {
-          "districts": "Districts",
+          "districts": "Districts (Bezirke)",
           "keywords": "Keywords",
           "include_self_initiated": "Include self-initiated deployments and exercises",
           "min_alarm_level": "Minimum alarm level",
@@ -39,7 +39,7 @@
           "scan_interval": "Update interval"
         },
         "data_description": {
-          "districts": "Only show incidents in these districts. Leave empty for all of Upper Austria.",
+          "districts": "Only show incidents in these Bezirke, as many as you like. Leave empty for all of Upper Austria.",
           "keywords": "Only show incidents whose type, subtype or place contains one of these words (for example Brand, Verkehr, Wald).",
           "include_self_initiated": "Brigades that roll out on their own or exercises (type SELBST) make up most of the list.",
           "min_alarm_level": "Hide incidents below this alarm level. 0 shows all.",

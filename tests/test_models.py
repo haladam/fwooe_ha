@@ -11,6 +11,7 @@ from datetime import timedelta
 import importlib.util
 import json
 from pathlib import Path
+import re
 import sys
 import unittest
 
@@ -33,6 +34,7 @@ def _load_models():
 
 models = _load_models()
 RAW = json.loads((ROOT / "tests" / "fixtures" / "feed.json").read_text(encoding="utf-8"))
+WEBSITE_BEZIRKE = (ROOT / "tests" / "fixtures" / "website_bezirke.html").read_text(encoding="utf-8")
 
 
 def feed():
@@ -41,6 +43,11 @@ def feed():
 
 def by_id(parsed, incident_id):
     return next(i for i in parsed.incidents if i.id == incident_id)
+
+
+def incident_in(bezirk, incident_id="X"):
+    """A minimal incident whose ``bezirk`` is as given (as the feeds spell it)."""
+    return models.parse_incident({"num1": incident_id, "einsatzart": "BRAND", "bezirk": bezirk})
 
 
 class ParseFeedTests(unittest.TestCase):
@@ -194,6 +201,51 @@ class FilterTests(unittest.TestCase):
         self.assertEqual(only(["Freistadt", "Braunau"]), ["E261004313", "E261004275"])
         self.assertEqual(only("Perg, Weyer"), ["E261004261"])  # comma separated text
 
+    def test_districts_can_be_chosen_by_code_id_or_name(self):
+        everything = feed().incidents
+        only = lambda districts: self.ids(  # noqa: E731
+            models.IncidentFilter.create(districts=districts, include_self_initiated=True).select(
+                everything
+            )
+        )
+        perg = ["E261004261"]
+        for spelling in ("PE-07", "pe-7", 7, "7", "Perg", " PERG "):
+            self.assertEqual(only([spelling]), perg, spelling)
+        # several Bezirke at once, in any mix of spellings; Steyr-Land is the "SE-11" one
+        self.assertEqual(only(["PE-07", 2, "Braunau"]), ["E261004313", "E261004275", "E261004261"])
+        self.assertEqual(only(["SE-11"]), ["E261004210"])
+        self.assertEqual(only([11]), ["E261004210"])
+        self.assertEqual(only([]), only(None))  # nothing chosen: everything
+        self.assertEqual(len(only([])), 7)
+        self.assertEqual(only(["WE-16", "LS-17"]), [])  # valid Bezirke without incidents
+
+    def test_the_same_bezirk_is_found_however_the_feed_spells_it(self):
+        for bezirk in (
+            {"id": 11, "text": "Steyr-Land"},  # the JSON feed
+            {"id": "11", "text": "Steyr-Land"},
+            {"id": "SE-11", "text": "SE-11"},  # the 2-day XML feed
+            {"id": None, "text": "steyr-land"},
+            {"id": 11},
+        ):
+            incident = incident_in(bezirk)
+            self.assertEqual((incident.district_id, incident.district), (11, "Steyr-Land"), bezirk)
+            chosen = models.IncidentFilter.create(districts=["SE-11"])
+            self.assertTrue(chosen.matches(incident), bezirk)
+            self.assertFalse(models.IncidentFilter.create(districts=["SR-15"]).matches(incident))
+
+    def test_a_name_that_is_no_known_bezirk_is_matched_as_a_name(self):
+        # e.g. a value an older version stored, or a Bezirk the feed may get one day
+        neustadt = incident_in({"id": 18, "text": "Neustadt"})
+        self.assertEqual((neustadt.district_id, neustadt.district), (18, "Neustadt"))
+        chosen = models.IncidentFilter.create(districts=["neustadt", "PE-07"])
+        self.assertEqual(chosen.other_districts, frozenset({"neustadt"}))
+        self.assertTrue(chosen.matches(neustadt))
+        self.assertTrue(chosen.matches(incident_in({"id": 7, "text": "Perg"})))
+        self.assertFalse(chosen.matches(incident_in({"id": 2, "text": "Freistadt"})))
+        # an incident without any Bezirk never passes a Bezirk filter
+        self.assertFalse(chosen.matches(incident_in(None)))
+        self.assertFalse(models.IncidentFilter.create(districts=["Linz"]).matches(neustadt))
+
     def test_keywords_match_type_subtype_and_place(self):
         everything = feed().incidents
         only = lambda keywords: self.ids(  # noqa: E731
@@ -225,12 +277,45 @@ class FilterTests(unittest.TestCase):
             min_alarm_level=-5,
             max_incidents=99999,
         )
-        self.assertEqual(flt.districts, frozenset({"perg"}))
+        self.assertEqual(flt.districts, frozenset({7}))
+        self.assertEqual(flt.other_districts, frozenset())
         self.assertEqual(flt.keywords, ("brand", "unfall"))
         self.assertEqual(flt.min_alarm_level, 0)
         self.assertEqual(flt.max_incidents, 1000)
         self.assertEqual(models.IncidentFilter.create(max_incidents="x").max_incidents, 20)
         self.assertEqual(models.IncidentFilter.create(max_incidents=5.0).max_incidents, 5)
+
+
+class DistrictTests(unittest.TestCase):
+    def test_the_list_is_the_one_of_the_website(self):
+        options = re.findall(r'<option value="([^"]+)">([^<]+)</option>', WEBSITE_BEZIRKE)
+        options = [(value, label) for value, label in options if value != "-1"]
+        self.assertEqual(len(options), 18)
+        self.assertEqual([(d.code, d.name) for d in models.DISTRICTS], options)
+        self.assertEqual([d.id for d in models.DISTRICTS], list(range(18)))
+
+    def test_every_bezirk_is_found_by_id_code_and_name(self):
+        for district in models.DISTRICTS:
+            for spelling in (district.id, str(district.id), district.code, district.name):
+                self.assertIs(models.find_district(spelling), district, spelling)
+        self.assertEqual(models.find_district("SE-11").name, "Steyr-Land")
+        self.assertEqual(models.find_district(" ls - 17 ").name, "Linz-Stadt")
+
+    def test_things_that_are_no_bezirk(self):
+        for value in (None, "", "  ", "Linz", "PE-08", "XX-07", "PE-07x", 18, -1, "-1", True, 7.5):
+            self.assertIsNone(models.find_district(value), repr(value))
+
+    def test_districts_are_stored_as_codes(self):
+        self.assertEqual(models.normalize_districts(None), [])
+        self.assertEqual(models.normalize_districts([]), [])
+        self.assertEqual(models.normalize_districts(["PE-07", "FR-02"]), ["PE-07", "FR-02"])
+        # what 0.1.0 stored: names, in any case; duplicates in other spellings collapse
+        self.assertEqual(
+            models.normalize_districts(["perg", "Steyr-Land", "PE-07", 7]), ["PE-07", "SE-11"]
+        )
+        # unknown values are kept (the user did choose them), once
+        self.assertEqual(models.normalize_districts(["Neustadt", "neustadt "]), ["Neustadt"])
+        self.assertEqual(models.normalize_districts("Perg, Gmunden"), ["PE-07", "GM-03"])
 
 
 class ChangeDetectionTests(unittest.TestCase):

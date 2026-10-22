@@ -7,7 +7,12 @@ from homeassistant.helpers import entity_registry as er
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 
-from custom_components.fwooe_ha.const import CONF_INCLUDE_SELF_INITIATED, CONF_NAME, DOMAIN
+from custom_components.fwooe_ha.const import (
+    CONF_DISTRICTS,
+    CONF_INCLUDE_SELF_INITIATED,
+    CONF_NAME,
+    DOMAIN,
+)
 
 from .common import FIRE_ID, feed_copy, refresh, serve, setup_integration
 
@@ -42,6 +47,32 @@ async def test_an_entity_for_the_fire(hass: HomeAssistant, feed_mock: AiohttpCli
 async def test_an_entity_per_incident(hass: HomeAssistant, feed_mock: AiohttpClientMocker) -> None:
     await setup_integration(hass, {CONF_INCLUDE_SELF_INITIATED: True})
     assert len(geo_states(hass)) == 7
+
+
+async def test_only_the_chosen_bezirke_get_entities(
+    hass: HomeAssistant, feed_mock: AiohttpClientMocker
+) -> None:
+    await setup_integration(
+        hass, {CONF_INCLUDE_SELF_INITIATED: True, CONF_DISTRICTS: ["PE-07", "SE-11"]}
+    )
+    assert {state.attributes["district"] for state in geo_states(hass)} == {"Perg", "Steyr-Land"}
+    assert len(geo_states(hass)) == 2
+
+
+async def test_changing_the_bezirke_removes_the_entities_of_the_others(
+    hass: HomeAssistant, feed_mock: AiohttpClientMocker
+) -> None:
+    entry = await setup_integration(hass, {CONF_INCLUDE_SELF_INITIATED: True})
+    assert len(geo_states(hass)) == 7
+
+    hass.config_entries.async_update_entry(
+        entry, options={CONF_INCLUDE_SELF_INITIATED: True, CONF_DISTRICTS: ["VB-13"]}
+    )
+    await hass.async_block_till_done()  # the update listener reloads the entry
+
+    assert {state.attributes["district"] for state in geo_states(hass)} == {"Vöcklabruck"}
+    assert len(geo_states(hass)) == 2  # both incidents in Ottnang
+    assert len(geo_registry_entries(hass)) == 2  # the others are not left behind
 
 
 async def test_entity_disappears_when_the_incident_ends_and_returns_with_it(
