@@ -3,6 +3,13 @@
 Newest first. The version in `custom_components/fwooe_ha/manifest.json` and the latest section
 below always match.
 
+## 0.3.0 - 2026-10-22
+
+* New: a **dashboard card**, `fwooe-incidents-card`, included with the integration and registered
+  by it (nothing to install, no resource to add). It lists the running incidents of a feed with the
+  alarm level, the distance from home, a link to the map and the alarmed brigades, in English and
+  German, in light and dark themes, with a visual editor. See the README.
+
 ## 0.2.0 - 2026-10-22
 
 Choose the Bezirke to follow.

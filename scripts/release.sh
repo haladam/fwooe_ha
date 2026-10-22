@@ -2,9 +2,9 @@
 # Prepare a release:  ./scripts/release.sh 0.1.1
 #
 # 1. checks that the working tree is clean and CHANGELOG.md has a "## 0.1.1" section
-# 2. sets the version in manifest.json
+# 2. sets the version in manifest.json (nothing to do if it says so already)
 # 3. runs the tests
-# 4. commits ("Release 0.1.1") and tags v0.1.1
+# 4. commits ("Release 0.1.1", if the manifest changed) and tags v0.1.1
 #
 # Nothing is pushed. Push when you are happy:   git push && git push --tags
 # The tag starts the Release workflow, which creates the GitHub release HACS offers as the update.
@@ -30,8 +30,12 @@ PY
 ./scripts/run_tests.sh
 
 git add -A
-git commit -q -m "Release $version"
+if git diff --cached --quiet; then
+  echo "manifest.json already says $version: only tagging"
+else
+  git commit -q -m "Release $version"
+fi
 git tag -a "v$version" -m "Release $version"
 echo
-echo "Release $version is committed and tagged. To publish it:"
+echo "Release $version is tagged. To publish it:"
 echo "  git push && git push --tags"

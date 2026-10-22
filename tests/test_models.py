@@ -18,13 +18,13 @@ import unittest
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def _load_models():
-    """Load models.py by path (importing the package would import Home Assistant)."""
-    name = "fwooe_models_under_test"
+def _load(name, filename):
+    """Load a module of the integration by path (importing the package would import HA)."""
+    name = f"fwooe_{name}_under_test"
     if name in sys.modules:
         return sys.modules[name]
     spec = importlib.util.spec_from_file_location(
-        name, ROOT / "custom_components" / "fwooe_ha" / "models.py"
+        name, ROOT / "custom_components" / "fwooe_ha" / filename
     )
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module  # dataclasses needs the module to be registered
@@ -32,7 +32,8 @@ def _load_models():
     return module
 
 
-models = _load_models()
+models = _load("models", "models.py")
+const = _load("const", "const.py")
 RAW = json.loads((ROOT / "tests" / "fixtures" / "feed.json").read_text(encoding="utf-8"))
 WEBSITE_BEZIRKE = (ROOT / "tests" / "fixtures" / "website_bezirke.html").read_text(encoding="utf-8")
 
@@ -316,6 +317,36 @@ class DistrictTests(unittest.TestCase):
         # unknown values are kept (the user did choose them), once
         self.assertEqual(models.normalize_districts(["Neustadt", "neustadt "]), ["Neustadt"])
         self.assertEqual(models.normalize_districts("Perg, Gmunden"), ["PE-07", "GM-03"])
+
+
+class CardFixtureTests(unittest.TestCase):
+    def test_the_card_fixture_is_what_the_incidents_sensor_writes(self):
+        """tests/card.test.mjs renders this file; it must not drift from the Python side.
+
+        If this fails, the attributes of the sensor changed: update tests/fixtures/card_state.json
+        (and the card, if it reads a changed field).
+        """
+        shown = models.IncidentFilter.create(include_self_initiated=True).select(feed().incidents)
+        incidents = [incident.as_dict() for incident in shown.shown]
+        expected = {
+            "entity_id": "sensor.feuerwehr_oo_incidents",
+            "state": str(len(incidents)),
+            "attributes": {
+                "incidents": incidents,
+                "incidents_by_kind": {"SELBST": 6, "BRAND": 1},
+                "attribution": const.ATTRIBUTION,
+                "friendly_name": "Feuerwehr OÖ Incidents",
+            },
+        }
+        card_state = json.loads(
+            (ROOT / "tests" / "fixtures" / "card_state.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(card_state, expected)
+
+    def test_the_card_finds_its_sensor_by_a_word_of_the_attribution(self):
+        card = ROOT / "custom_components" / "fwooe_ha" / "frontend" / "fwooe-incidents-card.js"
+        mark = re.search(r'ATTRIBUTION_MARK = "([^"]+)"', card.read_text(encoding="utf-8"))
+        self.assertIn(mark[1], const.ATTRIBUTION)
 
 
 class ChangeDetectionTests(unittest.TestCase):

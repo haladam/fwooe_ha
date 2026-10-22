@@ -28,6 +28,14 @@ jobs:
           python-version: "3.14"
       - run: python -B -m unittest -v tests.test_models
 
+  card:
+    name: Dashboard card (Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: node --version
+      - run: node --test tests/card.test.mjs
+
   integration:
     name: Integration tests (Home Assistant)
     runs-on: ubuntu-latest
