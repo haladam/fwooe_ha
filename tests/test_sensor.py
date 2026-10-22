@@ -53,14 +53,25 @@ async def test_default_filters_show_the_fire_only(
     [
         ({}, 1, [FIRE_ID]),
         ({CONF_INCLUDE_SELF_INITIATED: True}, 7, None),
-        ({CONF_DISTRICTS: ["Perg"]}, 1, [FIRE_ID]),
-        ({CONF_DISTRICTS: ["perg", "Freistadt"]}, 1, [FIRE_ID]),
-        ({CONF_DISTRICTS: ["Freistadt"]}, 0, []),
+        ({CONF_DISTRICTS: ["PE-07"]}, 1, [FIRE_ID]),
+        ({CONF_DISTRICTS: ["PE-07", "FR-02"]}, 1, [FIRE_ID]),
+        ({CONF_DISTRICTS: ["FR-02"]}, 0, []),
+        ({CONF_DISTRICTS: ["WE-16", "LS-17"]}, 0, []),
         (
-            {CONF_DISTRICTS: ["Freistadt"], CONF_INCLUDE_SELF_INITIATED: True},
+            {CONF_DISTRICTS: ["FR-02"], CONF_INCLUDE_SELF_INITIATED: True},
             1,
             [NEWEST_SELF_INITIATED_ID],
         ),
+        (
+            # several Bezirke at once: Freistadt (2) and Perg (7)
+            {CONF_DISTRICTS: ["PE-07", "FR-02"], CONF_INCLUDE_SELF_INITIATED: True},
+            2,
+            [NEWEST_SELF_INITIATED_ID, FIRE_ID],
+        ),
+        # names, as 0.1.0 stored them, still work
+        ({CONF_DISTRICTS: ["Perg"]}, 1, [FIRE_ID]),
+        ({CONF_DISTRICTS: ["perg", "Freistadt"]}, 1, [FIRE_ID]),
+        ({CONF_DISTRICTS: ["Freistadt"]}, 0, []),
         ({CONF_KEYWORDS: ["brand"]}, 1, [FIRE_ID]),
         ({CONF_KEYWORDS: ["verkehr"]}, 0, []),
         ({CONF_MIN_ALARM_LEVEL: 3}, 1, [FIRE_ID]),
