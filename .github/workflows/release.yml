@@ -1,0 +1,52 @@
+name: Release
+
+# Push a tag such as v0.1.1 (scripts/release.sh prepares it) and a GitHub release is created.
+# A release created by hand in the web interface for a new tag works too: the zip and the notes are added.
+# HACS offers the newest release as the update; the zip is for manual installs.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: The tag matches the manifest version
+        run: |
+          version=$(python3 -c 'import json; print(json.load(open("custom_components/fwooe_ha/manifest.json"))["version"])')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match manifest version $version"; exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Release notes from CHANGELOG.md
+        run: |
+          awk -v v="$VERSION" '
+            /^## / { if (found) exit; if ($2 == v) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "::error::no section '## $VERSION' in CHANGELOG.md"; exit 1; fi
+          cat notes.md
+
+      - name: Zip the integration
+        run: |
+          cd custom_components/fwooe_ha
+          zip -r -q "$GITHUB_WORKSPACE/fwooe_ha.zip" . -x '*/__pycache__/*' '__pycache__/*'
+
+      - name: Create the release (or complete one made by hand in the web interface)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" fwooe_ha.zip --clobber
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" fwooe_ha.zip \
+              --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag
+          fi

@@ -1,0 +1,14 @@
+{
+  "domain": "fwooe_ha",
+  "name": "Feuerwehr OÖ Einsätze",
+  "codeowners": [
+    "@haladam"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/haladam/fwooe_ha",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/haladam/fwooe_ha/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

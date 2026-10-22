@@ -1,0 +1,4 @@
+# The tests run against a real Home Assistant (needs Python 3.14 for current releases):
+#   python3.14 -m venv .venv && . .venv/bin/activate && pip install -r requirements_test.txt
+# The plugin pins the matching homeassistant release itself.
+pytest-homeassistant-custom-component
