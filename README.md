@@ -79,7 +79,7 @@ them on if you want to see everything the feed contains.
 | `sensor.<name>_feed_updated` | Diagnostic: when the feed says it was generated. |
 | `binary_sensor.<name>_active_incident` | On while at least one incident passes the filters. |
 | `event.<name>_incident_alert` | `new_incident` and `alarm_level_raised`. Incidents that are already running when Home Assistant starts do not fire an event. |
-| `geo_location.<incident>` | One per incident (source `fwooe_ha`); the state is the distance to home in km. |
+| `geo_location.<name>_<incident>` | One per incident (source `fwooe_ha`), named after the device and the incident; the state is the distance to home in km. |
 
 The entity ids depend on the name you chose and on the language of your Home Assistant.
 
@@ -121,7 +121,7 @@ default_zoom: 9
 ```yaml
 triggers:
   - trigger: numeric_state
-    entity_id: geo_location.brand_industrie_brand_gewerbe_katsdorf
+    entity_id: geo_location.feuerwehr_oo_brand_industrie_brand_gewerbe_katsdorf
     below: 15
 ```
 

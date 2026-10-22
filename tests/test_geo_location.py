@@ -26,7 +26,8 @@ async def test_an_entity_for_the_fire(hass: HomeAssistant, feed_mock: AiohttpCli
     await setup_integration(hass)
 
     (state,) = geo_states(hass)
-    assert state.name == "Brand Industrie - Brand Gewerbe (Katsdorf)"
+    # entity name = incident; the friendly name starts with the name of the device
+    assert state.name == "Feuerwehr OÖ Brand Industrie - Brand Gewerbe (Katsdorf)"
     assert state.attributes["source"] == DOMAIN
     assert state.attributes["latitude"] == 48.3122
     assert state.attributes["longitude"] == 14.5091

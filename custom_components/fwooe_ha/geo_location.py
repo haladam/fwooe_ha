@@ -66,8 +66,8 @@ class FwooeGeoLocation(FwooeEntity, GeolocationEvent):
     The entity removes itself when the incident is no longer in the (filtered) feed.
     """
 
-    # The name is the incident, not "<device> <something>".
-    _attr_has_entity_name = False
+    # The entity name is the incident; like every entity of a device it is shown as
+    # "<device name> <incident>", which tells apart several feeds.
     _attr_source = SOURCE
     _attr_unit_of_measurement = UnitOfLength.KILOMETERS
     _unrecorded_attributes = frozenset({"units"})
